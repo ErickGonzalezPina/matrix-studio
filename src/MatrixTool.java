@@ -24,7 +24,7 @@ public class MatrixTool extends Frame implements ActionListener {
 	}
 
 	public MatrixTool() {
-		setTitle("CSC 229 - Project 6 - Matrix");
+		setTitle("Matrix Studio");
 
 		// Create Menu
 
