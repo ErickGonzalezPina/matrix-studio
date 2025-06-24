@@ -56,10 +56,13 @@ public class Matrix {
 				"# Colums of Two-Dimensional Array", JOptionPane.QUESTION_MESSAGE);
 		int c = Integer.parseInt(input);
 
+		/* create array with given dimension */
 		array = new long[r][c];
+
 		input = JOptionPane.showInputDialog(null, "Please enter an integer > 0:",
 				"Lowest Value in the Array", JOptionPane.QUESTION_MESSAGE);
 		low = Integer.parseInt(input);
+
 		input = JOptionPane.showInputDialog(null, "Please enter an integer < 1000,000:",
 				"Highest Value in the Array", JOptionPane.QUESTION_MESSAGE);
 		high = Integer.parseInt(input);

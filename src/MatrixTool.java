@@ -224,9 +224,11 @@ public class MatrixTool extends Frame implements ActionListener {
 			case "Subtract":
 			case "Multiply": {
 				if (originalArray == null) {
-					originalArray = createMatrix("the first");
+					originalArray = new Matrix();
+					originalArray.createRandomly();
 				}
-				secondArray = createMatrix("the second");
+				secondArray = new Matrix();
+				secondArray.createRandomly();
 
 				if (command.equals("Add"))
 					result = originalArray.add(secondArray);
