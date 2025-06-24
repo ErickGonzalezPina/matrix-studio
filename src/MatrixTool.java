@@ -449,32 +449,6 @@ public class MatrixTool extends Frame implements ActionListener {
 		}
 	}
 
-	public int displayArray(Graphics g, long[][] a, int x, int y, int ww, String title) {
-		g.setFont(heading);
-		g.setColor(Color.RED);
-		g.drawString(title, ww / 2 - title.length() * 9, y);
-		g.setFont(text);
-		g.setColor(Color.BLACK);
-		y += 30;
-		int xs = x;
-
-		// display the array
-		for (int row = 0; row < a.length; row++) {
-			for (int col = 0; col < a[row].length; col++) {
-				if (command.equals("Search") && a[row][col] == key) {
-					g.setColor(Color.RED);
-					g.drawString("" + a[row][col], x, y);
-					g.setColor(Color.BLACK);
-				} else
-					g.drawString("" + a[row][col], x, y);
-				x += colWidth;
-			}
-			x = xs;
-			y += 25;
-		}
-		return y + 20;
-	}
-
 	public int digits(Matrix a) {
 		/*
 		 * The digits function calculates the width (in pixels) needed to display the
