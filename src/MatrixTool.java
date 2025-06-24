@@ -132,16 +132,6 @@ public class MatrixTool extends Frame implements ActionListener {
 	// called by windows manager whenever the application window performs an action
 	// (select a menu item, close, resize, ....
 	// ******************************************************************************
-	private Matrix createMatrix(String prompt) {
-		String rows = JOptionPane.showInputDialog("Enter number of rows for " + prompt + " array:");
-		String cols = JOptionPane.showInputDialog("Enter number of columns for " + prompt + " array:");
-		String lowerBound = JOptionPane.showInputDialog("Enter lower bound for " + prompt + " array:");
-		String upperBound = JOptionPane.showInputDialog("Enter upper bound for " + prompt + " array:");
-
-		return new Matrix(Integer.parseInt(rows), Integer.parseInt(cols), Integer.parseInt(lowerBound),
-				Integer.parseInt(upperBound));
-	}
-
 	public void actionPerformed(ActionEvent ev) {
 		// figure out which command was issued
 
@@ -193,9 +183,7 @@ public class MatrixTool extends Frame implements ActionListener {
 				break;
 			}
 			case
-					"Maximum":
-
-			{
+					"Maximum": {
 				repaint();
 				break;
 			}
@@ -246,10 +234,9 @@ public class MatrixTool extends Frame implements ActionListener {
 	// called by repaint() to redraw the screen
 	// ********************************************************
 	public void paint(Graphics g) {
-
-		// Check Command issued, take action accordingly
 		int ww = this.getWidth();
 		g.setFont(text);
+
 		switch (command) {
 			case "Randomly":
 			case "From File": {
@@ -261,8 +248,7 @@ public class MatrixTool extends Frame implements ActionListener {
 				int x = (ww - colWidth * t[0].length) / 2;
 				System.out.println(" ww = " + ww + " colWidth = " + colWidth + " x = " + x);
 
-				drawGrid(g, x, y, t.length, t[0].length); // Pass the matrix dimensions
-				displayArray(g, t, x, y, ww, command);
+				displayMatrixWithGrid(g, t, x, y, colWidth, 25);
 				break;
 			}
 
@@ -274,10 +260,8 @@ public class MatrixTool extends Frame implements ActionListener {
 				long[][] t = originalArray.getArray();
 				colWidth = digits(originalArray);
 				int x = (ww - colWidth * t[0].length) / 2;
-				System.out.println(" ww = " + ww + " colWidth = " + colWidth + " x = " + x);
-
-				// Display the original array
-				int currentY = displayArray(g, t, x, y, ww, "Original Array");
+				int currentY = y + 30 + t.length * 25 + 20;
+				displayMatrixWithGrid(g, t, x, y + 30, colWidth, 25);
 
 				g.setFont(heading);
 				g.setColor(Color.RED);
@@ -295,7 +279,6 @@ public class MatrixTool extends Frame implements ActionListener {
 					case "Average": {
 						double avg = originalArray.getAverage();
 						g.drawString("Average = " + avg, ww / 2 - 130, currentY);
-
 						break;
 					}
 					case "Standard Deviation": {
@@ -304,8 +287,6 @@ public class MatrixTool extends Frame implements ActionListener {
 						break;
 					}
 				}
-				// complete - Done
-				drawGrid(g, x, y, t.length, t[0].length);
 				break;
 			}
 
@@ -318,43 +299,31 @@ public class MatrixTool extends Frame implements ActionListener {
 					g.drawString("Error: Original array is empty or not initialized!", 50, 50);
 					break;
 				}
-				// Display Original Array
 				colWidth = digits(originalArray);
 				int x = (ww - colWidth * t[0].length) / 2;
-				System.out.println(" ww = " + ww + " colWidth = " + colWidth + " x = " + x);
-				int currentY = displayArray(g, t, x, y, ww, "Original Array");
-				drawGrid(g, x, y, t.length, t[0].length);
+				displayMatrixWithGrid(g, t, x, y, colWidth, 25);
 
 				// Display Row Stats
 				long[][] rowStats = originalArray.getRowStat();
 				if (rowStats != null && rowStats.length > 0) {
-
 					int rowStatsX = x + colWidth * t[0].length + 50;
 					int rowStatsTitleX = rowStatsX + colWidth - 40;
-
 					g.setFont(heading);
 					g.setColor(Color.RED);
 					g.drawString("Row Statistics", rowStatsTitleX, y + 5);
-
-					currentY = displayArray(g, rowStats, rowStatsX, y, ww, "");
-					// Draw the grid of row
-					drawGrid(g, rowStatsX, y, rowStats.length, 3);
+					displayMatrixWithGrid(g, rowStats, rowStatsX, y + 30, colWidth, 25);
 				}
 
 				// Display Column Stats
 				long[][] colStats = originalArray.getColStat();
 				if (colStats != null && colStats.length > 0) {
-					// set teh location of the col matrix
 					int colStatsY = y + t.length * 25 + 50;
 					int colStatsTitleX = x + colWidth - 40;
 
 					g.setFont(heading);
 					g.setColor(Color.RED);
 					g.drawString("Column Statistics", colStatsTitleX + colStatsTitleX / 4, colStatsY + 5);
-
-					currentY = displayArray(g, colStats, x, colStatsY, ww, "");
-					// Draw the grid of col
-					drawGrid(g, x, colStatsY, colStats.length, colStats[0].length);
+					displayMatrixWithGrid(g, colStats, x, colStatsY + 30, colWidth, 25);
 				}
 				break;
 			}
@@ -364,8 +333,7 @@ public class MatrixTool extends Frame implements ActionListener {
 				long[][] t = originalArray.getArray();
 				colWidth = digits(originalArray);
 				int x = (ww - colWidth * t[0].length) / 2;
-				System.out.println(" ww = " + ww + " colWidth = " + colWidth + " x = " + x);
-				int currentY = displayArray(g, t, x, y, ww, "Original Array");
+				displayMatrixWithGrid(g, t, x, y + 30, colWidth, 25);
 
 				// complete - Perform the search logic
 				boolean found = originalArray.search(key);
@@ -373,34 +341,23 @@ public class MatrixTool extends Frame implements ActionListener {
 				// display the result
 				g.setFont(heading);
 				g.setColor(Color.RED);
-				if (found) { // key in the array
-					g.drawString(" Search key ---> " + key + " <--- " + "Found",
-							ww / 2 - 150, currentY + 20);
+				int currentY = y + 30 + t.length * 25 + 20;
+				if (found) {
+					g.drawString(" Search key ---> " + key + " <--- " + "Found", ww / 2 - 150, currentY + 20);
 				} else {
-					g.drawString(" Search key ---> " + key + " <--- " + "NOT Found",
-							ww / 2 - 150, currentY + 20);
+					g.drawString(" Search key ---> " + key + " <--- " + "NOT Found", ww / 2 - 150, currentY + 20);
 				}
-				// complete - Done
-				drawGrid(g, x, y, t.length, t[0].length);
 				break;
 			}
+
 			case "Add":
 			case "Subtract":
 			case "Multiply": {
-				long[][] a, b, c;
+				long[][] a = originalArray.getArray();
+				long[][] b = secondArray.getArray();
+				long[][] c = result.getArray();
+
 				String operator = "";
-
-				a = originalArray.getArray();
-				b = secondArray.getArray();
-				c = result.getArray();
-
-				// determine the column width for A
-				int colWidthA = digits(originalArray);
-				// determine the column width for B
-				int colWidthB = digits(secondArray);
-				// determine the column width for C
-				int colWidthC = digits(result);
-
 				switch (command) {
 					case "Add":
 						operator = "+";
@@ -413,41 +370,81 @@ public class MatrixTool extends Frame implements ActionListener {
 						break;
 				}
 
-				// Display matrices A and B
 				int y = 100;
+				int cellHeight = 25;
 
-				g.setColor(Color.RED);
+				// determine the column width for A
+				int colWidthA = digits(originalArray);
+				// determine the column width for B
+				int colWidthB = digits(secondArray);
+				// determine the column width for C
+				int colWidthC = digits(result);
+
 				int xA = (ww - colWidthA * a[0].length) / 4;
-				int titleXA = (xA + (colWidthA * a[0].length - "A".length() * 9) / 2) - 100;
-				// draw A
-				g.drawString("A", titleXA, y - 5);
-				int currentY = displayArray(g, a, xA, y, ww, "");
-				drawGrid(g, xA, y, a.length, a[0].length);
-
-				// draw b
-				g.setColor(Color.RED);
 				int xB = (3 * ww - colWidthB * b[0].length) / 4;
-				int titleXB = (xB + (colWidthB * b[0].length - "B".length() * 9) / 2) - 100;
-				g.drawString("B", titleXB, y - 5);
-				currentY = displayArray(g, b, xB - 50, y, ww, "");
-				drawGrid(g, xB - 50, y, b.length, b[0].length);
+				int xC = (ww - colWidthC * c[0].length) / 2;
 
-				// draw operator
-				Font originalFont = g.getFont();
-				Font largerFont = originalFont.deriveFont(Font.BOLD, 25f);
-				g.setFont(largerFont); // Set the larger font
-
+				// Draw Matrix A
 				g.setColor(Color.RED);
-				g.drawString("" + operator, titleXB - 400, y + 100);
-				g.setFont(originalFont);
-
-				// Display the resulting matrix C
-				int xC = (ww - colWidthC * c[0].length) / 2; // C is centered
-				currentY = displayArray(g, c, xC, currentY + 50, ww, "C");
-				drawGrid(g, xC, currentY - 300, c.length, c[0].length); // Draw grid for Result Matrix C
-
 				g.setFont(heading);
+				g.drawString("A", xA + (colWidthA * a[0].length) / 2 - 10, y - 10);
+				g.setFont(text);
+				displayMatrixWithGrid(g, a, xA, y, colWidthA, cellHeight);
+
+				// Draw Matrix B
 				g.setColor(Color.RED);
+				g.setFont(heading);
+				g.drawString("B", xB + (colWidthB * b[0].length) / 2 - 10, y - 10);
+				g.setFont(text);
+				displayMatrixWithGrid(g, b, xB, y, colWidthB, cellHeight);
+
+				// Draw operator between A and B
+				g.setFont(heading.deriveFont(Font.BOLD, 30f));
+				g.setColor(Color.RED);
+				g.drawString(operator, (xA + colWidthA * a[0].length + xB) / 2 - 10, y + (a.length * cellHeight) / 2);
+				g.setFont(text);
+
+				// Draw Matrix C (Result)
+				int yC = y + Math.max(a.length, b.length) * cellHeight + 60;
+				g.setColor(Color.RED);
+				g.setFont(heading);
+				g.drawString("C", xC + (colWidthC * c[0].length) / 2 - 10, yC - 10);
+				g.setFont(text);
+				displayMatrixWithGrid(g, c, xC, yC, colWidthC, cellHeight);
+
+				break;
+			}
+		}
+	}
+
+	private void displayMatrixWithGrid(Graphics g, long[][] matrix, int x, int y, int colWidth, int cellHeight) {
+		// Draw grid
+		g.setColor(Color.BLACK);
+		// Draw horizontal lines
+		for (int i = 0; i <= matrix.length; i++) {
+			int lineY = y + i * cellHeight;
+			g.drawLine(x, lineY, x + matrix[0].length * colWidth, lineY);
+		}
+		// Draw vertical lines
+		for (int j = 0; j <= matrix[0].length; j++) {
+			int lineX = x + j * colWidth;
+			g.drawLine(lineX, y, lineX, y + matrix.length * cellHeight);
+		}
+
+		// Draw numbers centered in each cell
+		g.setColor(Color.BLACK);
+		FontMetrics fm = g.getFontMetrics();
+		for (int row = 0; row < matrix.length; row++) {
+			for (int col = 0; col < matrix[row].length; col++) {
+				String value = String.valueOf(matrix[row][col]);
+				int textWidth = fm.stringWidth(value);
+				int textHeight = fm.getAscent();
+				int cellX = x + col * colWidth;
+				int cellY = y + row * cellHeight;
+				// Center text in cell
+				int textX = cellX + (colWidth - textWidth) / 2;
+				int textY = cellY + (cellHeight + textHeight) / 2 - 4;
+				g.drawString(value, textX, textY);
 			}
 		}
 	}
@@ -478,29 +475,15 @@ public class MatrixTool extends Frame implements ActionListener {
 		return y + 20;
 	}
 
-	// Done
-	public void drawGrid(Graphics g, int x, int y, int r, int c) {
-		// Determine the cell width and height based on the current column width
-		int cellWidth = colWidth;
-		int cellHeight = 25;
-		// Move grid down and left by adjusting the starting x and y values
-		int offsetX = 10;
-		int offsetY = 10;
-		g.setColor(Color.BLACK);
-
-		// Draw horizontal lines
-		for (int i = 0; i <= r; i++) {
-			int lineY = y + offsetY + i * cellHeight; // Add offsetY to lineY
-			g.drawLine(x - offsetX, lineY, x - offsetX + c * cellWidth, lineY);
-		}
-		// Draw vertical lines
-		for (int j = 0; j <= c; j++) {
-			int lineX = x + offsetX + j * cellWidth; // Add offsetX to lineX
-			g.drawLine(lineX - offsetX - 10, y + offsetY, lineX - offsetX - 10, y + offsetY + r * cellHeight);
-		}
-	}
-
 	public int digits(Matrix a) {
+		/*
+		 * The digits function calculates the width (in pixels) needed to display the
+		 * largest
+		 * number in a matrix. It determines how many digits the largest or smallest
+		 * value has, then returns a value
+		 * that can be used as the column width for drawing the matrix so that all
+		 * numbers fit neatly in their cells. \
+		 */
 		int s = 1;
 		long max = a.getMaximum();
 		long min = a.getMinimum();
