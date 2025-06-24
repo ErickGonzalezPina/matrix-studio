@@ -384,19 +384,8 @@ public class MatrixTool extends Frame implements ActionListener {
 				int xB = (3 * ww - colWidthB * b[0].length) / 4;
 				int xC = (ww - colWidthC * c[0].length) / 2;
 
-				// Draw Matrix A
-				g.setColor(Color.RED);
-				g.setFont(heading);
-				g.drawString("A", xA + (colWidthA * a[0].length) / 2 - 10, y - 10);
-				g.setFont(text);
-				displayMatrixWithGrid(g, a, xA, y, colWidthA, cellHeight);
-
-				// Draw Matrix B
-				g.setColor(Color.RED);
-				g.setFont(heading);
-				g.drawString("B", xB + (colWidthB * b[0].length) / 2 - 10, y - 10);
-				g.setFont(text);
-				displayMatrixWithGrid(g, b, xB, y, colWidthB, cellHeight);
+				drawLabeledMatrix(g, "A", a, xA, y, colWidthA, cellHeight);
+				drawLabeledMatrix(g, "B", b, xB, y, colWidthB, cellHeight);
 
 				// Draw operator between A and B
 				g.setFont(heading.deriveFont(Font.BOLD, 30f));
@@ -406,15 +395,21 @@ public class MatrixTool extends Frame implements ActionListener {
 
 				// Draw Matrix C (Result)
 				int yC = y + Math.max(a.length, b.length) * cellHeight + 60;
-				g.setColor(Color.RED);
-				g.setFont(heading);
-				g.drawString("C", xC + (colWidthC * c[0].length) / 2 - 10, yC - 10);
-				g.setFont(text);
-				displayMatrixWithGrid(g, c, xC, yC, colWidthC, cellHeight);
+				drawLabeledMatrix(g, "C", c, xC, yC, colWidthC, cellHeight);
 
 				break;
 			}
 		}
+	}
+
+	// Helper to draw a labeled matrix with grid and centered numbers
+	private void drawLabeledMatrix(Graphics g, String label, long[][] matrix, int x, int y, int colWidth,
+			int cellHeight) {
+		g.setColor(Color.RED);
+		g.setFont(heading);
+		g.drawString(label, x + (colWidth * matrix[0].length) / 2 - 10, y - 10);
+		g.setFont(text);
+		displayMatrixWithGrid(g, matrix, x, y, colWidth, cellHeight);
 	}
 
 	private void displayMatrixWithGrid(Graphics g, long[][] matrix, int x, int y, int colWidth, int cellHeight) {
