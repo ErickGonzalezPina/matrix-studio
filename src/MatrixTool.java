@@ -388,10 +388,8 @@ public class MatrixTool extends Frame implements ActionListener {
 				drawLabeledMatrix(g, "B", b, xB, y, colWidthB, cellHeight);
 
 				// Draw operator between A and B
-				g.setFont(heading.deriveFont(Font.BOLD, 30f));
-				g.setColor(Color.RED);
-				g.drawString(operator, (xA + colWidthA * a[0].length + xB) / 2 - 10, y + (a.length * cellHeight) / 2);
-				g.setFont(text);
+				drawOperator(g, operator, (xA + colWidthA * a[0].length + xB) / 2 - 10,
+						y + (a.length * cellHeight) / 2);
 
 				// Draw Matrix C (Result)
 				int yC = y + Math.max(a.length, b.length) * cellHeight + 60;
@@ -442,6 +440,14 @@ public class MatrixTool extends Frame implements ActionListener {
 				g.drawString(value, textX, textY);
 			}
 		}
+	}
+
+	// Helper to draw the operator between matrices
+	private void drawOperator(Graphics g, String operator, int x, int y) {
+		g.setFont(heading.deriveFont(Font.BOLD, 30f));
+		g.setColor(Color.RED);
+		g.drawString(operator, x, y);
+		g.setFont(text);
 	}
 
 	public int digits(Matrix a) {
